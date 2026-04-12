@@ -28,6 +28,150 @@ Passeadores de cachorros autônomos e pequenos prestadores de serviços pet que 
 - ruff (linting / análise estática)
 - GitHub Actions (CI)
 
+## Exemplos de Uso
+
+(.venv) PS C:\Users\Denise Ortiga\Downloads\dog-walker-control> python -m src.main
+
+=============================================
+       🐾  DOG WALKER CONTROL  🐾
+=============================================
+📂 Dados carregados do histórico salvo.
+
+[1] Registrar passeio
+[2] Listar todos os passeios
+[3] Ver total a receber no mês
+[4] Buscar por dono
+[5] Remover registro
+[6] Ver agenda da semana
+[0] Sair
+---------------------------------------------
+Escolha uma opção: 1
+Nome do cachorro: Arceus
+Nome do dono: Cecilia
+Telefone do dono (Enter para pular): 
+Passeios por dia: 1
+
+Dias selecionados (0/5): nenhum
+
+  [1] [ ] Segunda-feira
+  [2] [ ] Terça-feira
+  [3] [ ] Quarta-feira
+  [4] [ ] Quinta-feira
+  [5] [ ] Sexta-feira
+  [6] [ ] Sábado
+  [7] [ ] Domingo
+
+  [0] Confirmar seleção
+  (selecione até 5 dias, digite o número para marcar/desmarcar)
+
+Opção: 1
+  ✓ 'Segunda-feira' selecionado.
+
+Dias selecionados (1/5): Segunda-feira
+
+  [1] [✓] Segunda-feira
+  [2] [ ] Terça-feira
+  [3] [ ] Quarta-feira
+  [4] [ ] Quinta-feira
+  [5] [ ] Sexta-feira
+  [6] [ ] Sábado
+  [7] [ ] Domingo
+
+  [0] Confirmar seleção
+  (selecione até 5 dias, digite o número para marcar/desmarcar)
+
+Opção: 2
+  ✓ 'Terça-feira' selecionado.
+
+Dias selecionados (2/5): Segunda-feira, Terça-feira
+
+  [1] [✓] Segunda-feira
+  [2] [✓] Terça-feira
+  [3] [ ] Quarta-feira
+  [4] [ ] Quinta-feira
+  [5] [ ] Sexta-feira
+  [6] [ ] Sábado
+  [7] [ ] Domingo
+
+  [0] Confirmar seleção
+  (selecione até 5 dias, digite o número para marcar/desmarcar)
+
+Opção: 4
+  ✓ 'Quinta-feira' selecionado.
+
+Dias selecionados (3/5): Segunda-feira, Terça-feira, Quinta-feira
+
+  [1] [✓] Segunda-feira
+  [2] [✓] Terça-feira
+  [3] [ ] Quarta-feira
+  [4] [✓] Quinta-feira
+  [5] [ ] Sexta-feira
+  [6] [ ] Sábado
+  [7] [ ] Domingo
+
+  [0] Confirmar seleção
+  (selecione até 5 dias, digite o número para marcar/desmarcar)
+
+Opção: 5
+  ✓ 'Sexta-feira' selecionado.
+
+Dias selecionados (4/5): Segunda-feira, Terça-feira, Quinta-feira, Sexta-feira
+
+  [1] [✓] Segunda-feira
+  [2] [✓] Terça-feira
+  [3] [ ] Quarta-feira
+  [4] [✓] Quinta-feira
+  [5] [✓] Sexta-feira
+  [6] [ ] Sábado
+  [7] [ ] Domingo
+
+  [0] Confirmar seleção
+  (selecione até 5 dias, digite o número para marcar/desmarcar)
+
+Opção: 0
+
+✅ Registrado! Arceus — Seg / Ter / Qui / Sex — 4 passeio(s)/semana — R$ 100.00
+
+[1] Registrar passeio
+[2] Listar todos os passeios
+[3] Ver total a receber no mês
+[4] Buscar por dono
+[5] Remover registro
+[6] Ver agenda da semana
+[0] Sair
+---------------------------------------------
+Escolha uma opção: 6
+
+📅  Segunda-feira  (4 passeio(s) — R$ 100.00)
+    ----------------------------------------------------
+    🐕 Sacy e Percy    Dono: Patrícia        Tel: sem telefone
+    🐕 Zeus            Dono: Carla           Tel: sem telefone
+    🐕 Dora e Nola     Dono: Rafaela         Tel: sem telefone
+    🐕 Arceus          Dono: Cecilia         Tel: sem telefone
+
+📅  Terça-feira  (2 passeio(s) — R$ 50.00)
+    ----------------------------------------------------
+    🐕 Zeus            Dono: Carla           Tel: sem telefone
+    🐕 Arceus          Dono: Cecilia         Tel: sem telefone
+
+📅  Quarta-feira  (2 passeio(s) — R$ 50.00)
+    ----------------------------------------------------
+    🐕 Sacy e Percy    Dono: Patrícia        Tel: sem telefone
+    🐕 Dora e Nola     Dono: Rafaela         Tel: sem telefone
+
+📅  Quinta-feira  (2 passeio(s) — R$ 50.00)
+    ----------------------------------------------------
+    🐕 Zeus            Dono: Carla           Tel: sem telefone
+    🐕 Arceus          Dono: Cecilia         Tel: sem telefone
+
+📅  Sexta-feira  (4 passeio(s) — R$ 100.00)
+    ----------------------------------------------------
+    🐕 Sacy e Percy    Dono: Patrícia        Tel: sem telefone
+    🐕 Zeus            Dono: Carla           Tel: sem telefone
+    🐕 Dora e Nola     Dono: Rafaela         Tel: sem telefone
+    🐕 Arceus          Dono: Cecilia         Tel: sem telefone
+
+
 ## Instalação
 
 ```bash

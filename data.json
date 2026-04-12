@@ -41,5 +41,20 @@
     "total_walks": 3,
     "total": 75.0,
     "date": "2026-04-12"
+  },
+  {
+    "dog_name": "Arceus",
+    "owner_name": "Cecilia",
+    "phone": "",
+    "walks_per_day": 1,
+    "days_of_week": [
+      "Segunda-feira",
+      "Terça-feira",
+      "Quinta-feira",
+      "Sexta-feira"
+    ],
+    "total_walks": 4,
+    "total": 100.0,
+    "date": "2026-04-12"
   }
 ]
