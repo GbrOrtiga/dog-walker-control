@@ -5,7 +5,7 @@ Execute com:
     python -m src.main
 """
 
-from src.core import DogWalkerControl
+from src.core import DogWalkerControl, DAYS_OF_WEEK
 
 
 def print_header():
@@ -20,7 +20,7 @@ def print_menu():
     print("[3] Ver total a receber no mês")
     print("[4] Buscar por dono")
     print("[5] Remover registro")
-    print("[6] Ver passeios por dia")
+    print("[6] Ver agenda da semana")
     print("[0] Sair")
     print("-" * 45)
 
@@ -32,6 +32,18 @@ def input_int(prompt: str) -> int | None:
     except ValueError:
         print("⚠  Por favor, informe um número inteiro válido.")
         return None
+
+
+def choose_day() -> str | None:
+    """Exibe menu de dias da semana e retorna o escolhido."""
+    print("\nEscolha o dia da semana:")
+    for i, day in enumerate(DAYS_OF_WEEK, start=1):
+        print(f"  [{i}] {day}")
+    choice = input_int("Dia: ")
+    if choice is None or not (1 <= choice <= len(DAYS_OF_WEEK)):
+        print("⚠  Opção inválida.")
+        return None
+    return DAYS_OF_WEEK[choice - 1]
 
 
 def run():
@@ -52,11 +64,17 @@ def run():
             walks = input_int("Quantidade de passeios: ")
             if walks is None:
                 continue
+
+            day = choose_day()
+            if day is None:
+                continue
+
             try:
-                record = control.add_walk(dog, owner, walks, phone)
+                record = control.add_walk(dog, owner, walks, day, phone)
                 phone_info = f" | Tel: {record['phone']}" if record["phone"] else ""
                 print(
                     f"\n✅ Registrado! {record['dog_name']} — "
+                    f"{record['day_of_week']} — "
                     f"{record['walks']} passeio(s) — "
                     f"R$ {record['total']:.2f}"
                     f"{phone_info}"
@@ -72,15 +90,15 @@ def run():
             else:
                 print(
                     f"\n{'Cachorro':<15} {'Dono':<15} {'Telefone':<15} "
-                    f"{'Data':<12} {'Passeios':>8} {'Total':>10}"
+                    f"{'Dia':<16} {'Passeios':>8} {'Total':>10}"
                 )
-                print("-" * 78)
+                print("-" * 82)
                 for r in walks:
                     phone = r.get("phone") or "-"
-                    date_str = r.get("date", "-")
+                    day = r.get("day_of_week", "-")
                     print(
                         f"{r['dog_name']:<15} {r['owner_name']:<15} {phone:<15} "
-                        f"{date_str:<12} {r['walks']:>8} R$ {r['total']:>8.2f}"
+                        f"{day:<16} {r['walks']:>8} R$ {r['total']:>8.2f}"
                     )
 
         # ── [3] Total a receber ──────────────────────────────────────
@@ -97,11 +115,11 @@ def run():
             else:
                 for r in results:
                     phone = r.get("phone") or "não informado"
+                    day = r.get("day_of_week", "-")
                     print(
-                        f"  🐕 {r['dog_name']} — "
+                        f"  🐕 {r['dog_name']} — {day} — "
                         f"{r['walks']} passeio(s) — "
-                        f"R$ {r['total']:.2f} — "
-                        f"Tel: {phone}"
+                        f"R$ {r['total']:.2f} — Tel: {phone}"
                     )
 
         # ── [5] Remover registro ─────────────────────────────────────
@@ -113,16 +131,30 @@ def run():
             else:
                 print(f"⚠  Cachorro '{dog}' não encontrado.")
 
-        # ── [6] Passeios por dia ─────────────────────────────────────
+        # ── [6] Agenda da semana ─────────────────────────────────────
         elif choice == "6":
             by_day = control.walks_by_day()
-            if not by_day:
+            has_any = any(records for records in by_day.values())
+
+            if not has_any:
                 print("\nNenhum passeio registrado ainda.")
             else:
-                print(f"\n{'Data':<15} {'Passeios':>10}")
-                print("-" * 27)
-                for day, count in sorted(by_day.items()):
-                    print(f"{day:<15} {count:>10}")
+                print()
+                for day, records in by_day.items():
+                    if not records:
+                        continue
+                    total_walks = sum(r["walks"] for r in records)
+                    total_value = sum(r["total"] for r in records)
+                    print(f"📅  {day}  ({total_walks} passeio(s) — R$ {total_value:.2f})")
+                    print("    " + "-" * 50)
+                    for r in records:
+                        phone = r.get("phone") or "sem telefone"
+                        print(
+                            f"    🐕 {r['dog_name']:<15} "
+                            f"Dono: {r['owner_name']:<15} "
+                            f"Tel: {phone}"
+                        )
+                    print()
 
         # ── [0] Sair ─────────────────────────────────────────────────
         elif choice == "0":

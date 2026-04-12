@@ -2,11 +2,11 @@
 core.py — Lógica de negócio do Dog Walker Control.
 
 Responsável por:
-- Registrar passeios (com telefone opcional)
+- Registrar passeios (com telefone opcional e dia da semana)
 - Calcular valores
 - Listar e remover registros
 - Persistir dados em arquivo JSON
-- Exibir passeios por dia
+- Exibir passeios agrupados por dia da semana
 """
 
 import json
@@ -15,6 +15,18 @@ from datetime import date
 
 PRICE_PER_WALK = 25.0
 DATA_FILE = "data.json"
+
+DAYS_OF_WEEK = [
+    "Segunda-feira",
+    "Terça-feira",
+    "Quarta-feira",
+    "Quinta-feira",
+    "Sexta-feira",
+    "Sábado",
+    "Domingo",
+]
+
+DAY_ORDER = {day: i for i, day in enumerate(DAYS_OF_WEEK)}
 
 
 class DogWalkerControl:
@@ -55,6 +67,7 @@ class DogWalkerControl:
         dog_name: str,
         owner_name: str,
         walks: int,
+        day_of_week: str,
         phone: str = "",
     ) -> dict:
         """Registra passeios para um cachorro.
@@ -63,7 +76,8 @@ class DogWalkerControl:
             dog_name: Nome do cachorro.
             owner_name: Nome do dono.
             walks: Quantidade de passeios realizados.
-            phone: Telefone do dono (opcional, pressione Enter para pular).
+            day_of_week: Dia da semana escolhido pelo usuário.
+            phone: Telefone do dono (opcional).
 
         Returns:
             Dicionário com os dados do registro.
@@ -71,6 +85,7 @@ class DogWalkerControl:
         dog_name = dog_name.strip()
         owner_name = owner_name.strip()
         phone = phone.strip()
+        day_of_week = day_of_week.strip()
 
         if not dog_name:
             raise ValueError("O nome do cachorro não pode estar vazio.")
@@ -78,6 +93,8 @@ class DogWalkerControl:
             raise ValueError("O nome do dono não pode estar vazio.")
         if walks <= 0:
             raise ValueError("A quantidade de passeios deve ser maior que zero.")
+        if day_of_week not in DAYS_OF_WEEK:
+            raise ValueError(f"Dia da semana inválido: {day_of_week}")
 
         total = walks * self.price_per_walk
         record = {
@@ -86,6 +103,7 @@ class DogWalkerControl:
             "phone": phone,
             "walks": walks,
             "total": total,
+            "day_of_week": day_of_week,
             "date": date.today().isoformat(),
         }
         self._walks.append(record)
@@ -115,10 +133,11 @@ class DogWalkerControl:
         owner_name = owner_name.strip().lower()
         return [r for r in self._walks if r["owner_name"].lower() == owner_name]
 
-    def walks_by_day(self) -> dict[str, int]:
-        """Retorna um dicionário com a quantidade de passeios por data."""
-        result: dict[str, int] = {}
+    def walks_by_day(self) -> dict[str, list[dict]]:
+        """Retorna registros agrupados por dia da semana, em ordem."""
+        result: dict[str, list[dict]] = {day: [] for day in DAYS_OF_WEEK}
         for r in self._walks:
-            day = r.get("date", "sem data")
-            result[day] = result.get(day, 0) + r["walks"]
+            day = r.get("day_of_week", "")
+            if day in result:
+                result[day].append(r)
         return result
