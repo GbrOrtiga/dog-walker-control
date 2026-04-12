@@ -1,0 +1,26 @@
+[
+  {
+    "dog_name": "Zeus",
+    "owner_name": "Patricia",
+    "phone": "61999999",
+    "walks": 15,
+    "total": 375.0,
+    "date": "2026-04-12"
+  },
+  {
+    "dog_name": "Percy e Sacy",
+    "owner_name": "Carla",
+    "phone": "",
+    "walks": 12,
+    "total": 300.0,
+    "date": "2026-04-12"
+  },
+  {
+    "dog_name": "Nola e Dora",
+    "owner_name": "Rafaela",
+    "phone": "",
+    "walks": 12,
+    "total": 300.0,
+    "date": "2026-04-12"
+  }
+]
