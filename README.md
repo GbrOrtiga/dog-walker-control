@@ -64,7 +64,7 @@ ruff check src/ tests/
 
 ## Versão Atual
 
-`2.1.1`
+`3.2.2`
 
 ## Autor
 
@@ -72,4 +72,4 @@ Gabriel Ortiga Vassallo Fernández
 
 ## Repositório
 
-[https://github.com/GbrOrtiga/dog-walker-control](https://github.com/GbrOrtiga/dog-walker-control)
+[https://github.com/GbrOrtiga/dog-walker-control](https://github.com/GbrOrtiga/dog-walker-control

@@ -5,7 +5,7 @@ Execute com:
     python -m src.main
 """
 
-from src.core import DogWalkerControl, DAYS_OF_WEEK
+from src.core import DogWalkerControl, DAYS_OF_WEEK, MAX_DAYS
 
 
 def print_header():
@@ -34,16 +34,62 @@ def input_int(prompt: str) -> int | None:
         return None
 
 
-def choose_day() -> str | None:
-    """Exibe menu de dias da semana e retorna o escolhido."""
-    print("\nEscolha o dia da semana:")
-    for i, day in enumerate(DAYS_OF_WEEK, start=1):
-        print(f"  [{i}] {day}")
-    choice = input_int("Dia: ")
-    if choice is None or not (1 <= choice <= len(DAYS_OF_WEEK)):
-        print("⚠  Opção inválida.")
-        return None
-    return DAYS_OF_WEEK[choice - 1]
+def choose_days() -> list[str] | None:
+    """Exibe menu de dias da semana e permite selecionar até MAX_DAYS dias."""
+    selected: list[str] = []
+
+    while True:
+        print(f"\nDias selecionados ({len(selected)}/{MAX_DAYS}): ", end="")
+        print(", ".join(selected) if selected else "nenhum")
+        print()
+
+        # Mostra opções disponíveis
+        for i, day in enumerate(DAYS_OF_WEEK, start=1):
+            mark = "✓" if day in selected else " "
+            print(f"  [{i}] [{mark}] {day}")
+
+        print("\n  [0] Confirmar seleção")
+        print(f"  (selecione até {MAX_DAYS} dias, digite o número para marcar/desmarcar)")
+
+        choice = input_int("\nOpção: ")
+
+        if choice is None:
+            continue
+
+        if choice == 0:
+            if not selected:
+                print("⚠  Selecione ao menos um dia.")
+                continue
+            return selected
+
+        if not (1 <= choice <= len(DAYS_OF_WEEK)):
+            print("⚠  Opção inválida.")
+            continue
+
+        day = DAYS_OF_WEEK[choice - 1]
+
+        if day in selected:
+            selected.remove(day)
+            print(f"  ✗ '{day}' desmarcado.")
+        elif len(selected) >= MAX_DAYS:
+            print(f"⚠  Você já selecionou o máximo de {MAX_DAYS} dias.")
+        else:
+            selected.append(day)
+            print(f"  ✓ '{day}' selecionado.")
+
+
+def format_days(days: list[str]) -> str:
+    """Formata a lista de dias de forma legível."""
+    abrev = {
+        "Segunda-feira": "Seg",
+        "Terça-feira": "Ter",
+        "Quarta-feira": "Qua",
+        "Quinta-feira": "Qui",
+        "Sexta-feira": "Sex",
+        "Sábado": "Sáb",
+        "Domingo": "Dom",
+    }
+    return " / ".join(abrev.get(d, d) for d in days)
 
 
 def run():
@@ -61,22 +107,23 @@ def run():
             dog = input("Nome do cachorro: ")
             owner = input("Nome do dono: ")
             phone = input("Telefone do dono (Enter para pular): ")
-            walks = input_int("Quantidade de passeios: ")
-            if walks is None:
+            walks_per_day = input_int("Passeios por dia: ")
+            if walks_per_day is None:
                 continue
 
-            day = choose_day()
-            if day is None:
+            days = choose_days()
+            if days is None:
                 continue
 
             try:
-                record = control.add_walk(dog, owner, walks, day, phone)
-                phone_info = f" | Tel: {record['phone']}" if record["phone"] else ""
+                record = control.add_walk(dog, owner, walks_per_day, days, phone)
+                phone_info = f" | Tel: {record['phone']}" if record.get("phone") else ""
+                days_fmt = format_days(record.get("days_of_week", []))
                 print(
-                    f"\n✅ Registrado! {record['dog_name']} — "
-                    f"{record['day_of_week']} — "
-                    f"{record['walks']} passeio(s) — "
-                    f"R$ {record['total']:.2f}"
+                    f"\n✅ Registrado! {record.get('dog_name', 'N/D')} — "
+                    f"{days_fmt} — "
+                    f"{record.get('total_walks', 0)} passeio(s)/semana — "
+                    f"R$ {record.get('total', 0.0):.2f}"
                     f"{phone_info}"
                 )
             except ValueError as e:
@@ -89,16 +136,18 @@ def run():
                 print("\nNenhum passeio registrado ainda.")
             else:
                 print(
-                    f"\n{'Cachorro':<15} {'Dono':<15} {'Telefone':<15} "
-                    f"{'Dia':<16} {'Passeios':>8} {'Total':>10}"
+                    f"\n{'Cachorro':<15} {'Dono':<15} {'Telefone':<14} "
+                    f"{'Dias':<25} {'Pass/dia':>8} {'Total':>10}"
                 )
-                print("-" * 82)
+                print("-" * 90)
                 for r in walks:
                     phone = r.get("phone") or "-"
-                    day = r.get("day_of_week", "-")
+                    days_fmt = format_days(r.get("days_of_week", []))
+                    walks_per_day = r.get("walks_per_day", 1)
+                    total = r.get("total", 0.0)
                     print(
-                        f"{r['dog_name']:<15} {r['owner_name']:<15} {phone:<15} "
-                        f"{day:<16} {r['walks']:>8} R$ {r['total']:>8.2f}"
+                        f"{r.get('dog_name', 'N/D'):<15} {r.get('owner_name', 'N/D'):<15} {phone:<14} "
+                        f"{days_fmt:<25} {walks_per_day:>8} R$ {total:>8.2f}"
                     )
 
         # ── [3] Total a receber ──────────────────────────────────────
@@ -115,11 +164,11 @@ def run():
             else:
                 for r in results:
                     phone = r.get("phone") or "não informado"
-                    day = r.get("day_of_week", "-")
+                    days_fmt = format_days(r.get("days_of_week", []))
                     print(
-                        f"  🐕 {r['dog_name']} — {day} — "
-                        f"{r['walks']} passeio(s) — "
-                        f"R$ {r['total']:.2f} — Tel: {phone}"
+                        f"  🐕 {r.get('dog_name', 'N/D')} — {days_fmt} — "
+                        f"{r.get('total_walks', 0)} passeio(s)/semana — "
+                        f"R$ {r.get('total', 0.0):.2f} — Tel: {phone}"
                     )
 
         # ── [5] Remover registro ─────────────────────────────────────
@@ -143,15 +192,26 @@ def run():
                 for day, records in by_day.items():
                     if not records:
                         continue
-                    total_walks = sum(r["walks"] for r in records)
-                    total_value = sum(r["total"] for r in records)
-                    print(f"📅  {day}  ({total_walks} passeio(s) — R$ {total_value:.2f})")
-                    print("    " + "-" * 50)
+                    
+                    # Calcula totais do dia com segurança
+                    total_walks_day = 0
+                    total_value_day = 0
+                    
+                    for r in records:
+                        walks_per_day = r.get("walks_per_day", 1)
+                        total_walks = r.get("total_walks", walks_per_day * len(r.get("days_of_week", [])))
+                        total = r.get("total", 0.0)
+                        
+                        total_walks_day += walks_per_day
+                        total_value_day += (walks_per_day * total) / max(total_walks, 1)
+                    
+                    print(f"📅  {day}  ({total_walks_day} passeio(s) — R$ {total_value_day:.2f})")
+                    print("    " + "-" * 52)
                     for r in records:
                         phone = r.get("phone") or "sem telefone"
                         print(
-                            f"    🐕 {r['dog_name']:<15} "
-                            f"Dono: {r['owner_name']:<15} "
+                            f"    🐕 {r.get('dog_name', 'N/D'):<15} "
+                            f"Dono: {r.get('owner_name', 'N/D'):<15} "
                             f"Tel: {phone}"
                         )
                     print()

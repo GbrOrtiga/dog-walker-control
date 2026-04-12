@@ -2,7 +2,7 @@
 core.py — Lógica de negócio do Dog Walker Control.
 
 Responsável por:
-- Registrar passeios (com telefone opcional e dia da semana)
+- Registrar passeios (com telefone opcional e até 5 dias da semana)
 - Calcular valores
 - Listar e remover registros
 - Persistir dados em arquivo JSON
@@ -26,7 +26,7 @@ DAYS_OF_WEEK = [
     "Domingo",
 ]
 
-DAY_ORDER = {day: i for i, day in enumerate(DAYS_OF_WEEK)}
+MAX_DAYS = 5
 
 
 class DogWalkerControl:
@@ -66,17 +66,17 @@ class DogWalkerControl:
         self,
         dog_name: str,
         owner_name: str,
-        walks: int,
-        day_of_week: str,
+        walks_per_day: int,
+        days_of_week: list[str],
         phone: str = "",
     ) -> dict:
-        """Registra passeios para um cachorro.
+        """Registra passeios para um cachorro em múltiplos dias da semana.
 
         Args:
             dog_name: Nome do cachorro.
             owner_name: Nome do dono.
-            walks: Quantidade de passeios realizados.
-            day_of_week: Dia da semana escolhido pelo usuário.
+            walks_per_day: Quantidade de passeios por dia.
+            days_of_week: Lista de dias da semana (1 a 5 dias).
             phone: Telefone do dono (opcional).
 
         Returns:
@@ -85,25 +85,34 @@ class DogWalkerControl:
         dog_name = dog_name.strip()
         owner_name = owner_name.strip()
         phone = phone.strip()
-        day_of_week = day_of_week.strip()
 
         if not dog_name:
             raise ValueError("O nome do cachorro não pode estar vazio.")
         if not owner_name:
             raise ValueError("O nome do dono não pode estar vazio.")
-        if walks <= 0:
+        if walks_per_day <= 0:
             raise ValueError("A quantidade de passeios deve ser maior que zero.")
-        if day_of_week not in DAYS_OF_WEEK:
-            raise ValueError(f"Dia da semana inválido: {day_of_week}")
+        if not days_of_week:
+            raise ValueError("Selecione ao menos um dia da semana.")
+        if len(days_of_week) > MAX_DAYS:
+            raise ValueError(f"Selecione no máximo {MAX_DAYS} dias.")
+        for day in days_of_week:
+            if day not in DAYS_OF_WEEK:
+                raise ValueError(f"Dia da semana inválido: {day}")
+        if len(days_of_week) != len(set(days_of_week)):
+            raise ValueError("Não é permitido selecionar o mesmo dia mais de uma vez.")
 
-        total = walks * self.price_per_walk
+        total_walks = walks_per_day * len(days_of_week)
+        total = total_walks * self.price_per_walk
+
         record = {
             "dog_name": dog_name,
             "owner_name": owner_name,
             "phone": phone,
-            "walks": walks,
+            "walks_per_day": walks_per_day,
+            "days_of_week": days_of_week,
+            "total_walks": total_walks,
             "total": total,
-            "day_of_week": day_of_week,
             "date": date.today().isoformat(),
         }
         self._walks.append(record)
@@ -137,7 +146,7 @@ class DogWalkerControl:
         """Retorna registros agrupados por dia da semana, em ordem."""
         result: dict[str, list[dict]] = {day: [] for day in DAYS_OF_WEEK}
         for r in self._walks:
-            day = r.get("day_of_week", "")
-            if day in result:
-                result[day].append(r)
+            for day in r.get("days_of_week", []):
+                if day in result:
+                    result[day].append(r)
         return result

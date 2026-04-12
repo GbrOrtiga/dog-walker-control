@@ -1,11 +1,45 @@
 [
   {
-    "dog_name": "Zeus",
-    "owner_name": "Carla Miranda",
+    "dog_name": "Sacy e Percy",
+    "owner_name": "Patrícia",
     "phone": "",
-    "walks": 12,
-    "total": 300.0,
-    "day_of_week": "Segunda-feira",
+    "walks_per_day": 1,
+    "days_of_week": [
+      "Segunda-feira",
+      "Quarta-feira",
+      "Sexta-feira"
+    ],
+    "total_walks": 3,
+    "total": 75.0,
+    "date": "2026-04-12"
+  },
+  {
+    "dog_name": "Zeus",
+    "owner_name": "Carla",
+    "phone": "",
+    "walks_per_day": 1,
+    "days_of_week": [
+      "Segunda-feira",
+      "Terça-feira",
+      "Quinta-feira",
+      "Sexta-feira"
+    ],
+    "total_walks": 4,
+    "total": 100.0,
+    "date": "2026-04-12"
+  },
+  {
+    "dog_name": "Dora e Nola",
+    "owner_name": "Rafaela",
+    "phone": "",
+    "walks_per_day": 1,
+    "days_of_week": [
+      "Segunda-feira",
+      "Quarta-feira",
+      "Sexta-feira"
+    ],
+    "total_walks": 3,
+    "total": 75.0,
     "date": "2026-04-12"
   }
 ]
