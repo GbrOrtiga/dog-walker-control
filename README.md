@@ -1,10 +1,9 @@
 # 🐾 Dog Walker Control
-
-![CI](https://github.com/SEU_USUARIO/dog-walker-control/actions/workflows/ci.yml/badge.svg)
-
+Sou o Gabriel Ortiga RA 22503789, estou montando uma "Gerenciado de Passeios" em Python para facilitar o meu dia a dia e meu controle sobre os passeios ao mesmo tempo fazendo isso como um projeto real para da faculdade resolvendo um problema real meu 
 ## Descrição do Problema
 
-Passeadores de cachorros autônomos frequentemente enfrentam dificuldades para controlar quantos passeios realizaram para cada cliente e calcular o valor total a receber no final do mês. O controle feito no papel ou em planilhas genéricas é suscetível a erros e perda de informações.
+Nós passeadores de cachorros autônomos frequentemente enfrentam dificuldades para controlar quantos passeios realizaram para cada cliente e calcular o valor total a receber no final do mês
+O controle feito no papel ou em planilhas genéricas e é bem provável que erros aconteçam
 
 ## Proposta da Solução
 
@@ -24,7 +23,7 @@ Passeadores de cachorros autônomos e pequenos prestadores de serviços pet que 
 
 ## Tecnologias Utilizadas
 
-- Python 3.12
+- Python 3.14.4
 - pytest (testes automatizados)
 - ruff (linting / análise estática)
 - GitHub Actions (CI)
@@ -33,7 +32,7 @@ Passeadores de cachorros autônomos e pequenos prestadores de serviços pet que 
 
 ```bash
 # Clone o repositório
-git clone https://github.com/SEU_USUARIO/dog-walker-control.git
+git clone https://github.com/GbrOrtiga/dog-walker-control.git
 cd dog-walker-control
 
 # (Opcional) Crie e ative um ambiente virtual
@@ -69,8 +68,8 @@ ruff check src/ tests/
 
 ## Autor
 
-Seu Nome Completo
+Gabriel Ortiga Vassallo Fernández
 
 ## Repositório
 
-[https://github.com/SEU_USUARIO/dog-walker-control](https://github.com/SEU_USUARIO/dog-walker-control)
+[https://github.com/GbrOrtiga/dog-walker-control](https://github.com/GbrOrtiga/dog-walker-control)
