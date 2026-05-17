@@ -56,5 +56,19 @@
     "total_walks": 4,
     "total": 100.0,
     "date": "2026-04-12"
+  },
+  {
+    "dog_name": "Bolt",
+    "owner_name": "Ana Silva",
+    "phone": "(11) 98765-4321",
+    "walks_per_day": 1,
+    "days_of_week": [
+      "Segunda-feira",
+      "Quarta-feira",
+      "Sexta-feira"
+    ],
+    "total_walks": 3,
+    "total": 75.0,
+    "date": "2026-05-17"
   }
 ]
