@@ -190,9 +190,23 @@ pip install -r requirements.txt
 
 ## Execução
 
+### Interface CLI
 ```bash
 python -m src.main
 ```
+
+### Interface Web local
+```bash
+python -m src.web
+```
+
+Depois acesse:
+```bash
+http://localhost:5000
+```
+
+### GitHub Pages / Live Server
+Se estiver usando GitHub Pages ou Live Server, abra o arquivo `index.html` na raiz do projeto.
 
 ## Rodando os Testes
 
