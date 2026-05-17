@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Dog Walker Control - Standalone</title>
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --primary-dark: #ee5a52;
+            --secondary: #4ecdc4;
+            --accent: #95e1d3;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --border-color: #e0e0e0;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            border: none;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .tab-btn:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card-revenue {
+            background: linear-gradient(135deg, var(--success) 0%, var(--accent) 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .card-revenue .big-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="tel"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .day-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .day-checkbox:hover {
+            border-color: var(--primary);
+            background: rgba(255, 107, 107, 0.05);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background: var(--bg-light);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tr:hover {
+            background: var(--bg-light);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: -100px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            transition: bottom 0.3s ease;
+            z-index: 1000;
+            max-width: 300px;
+        }
+
+        .toast.show {
+            bottom: 20px;
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .form-info {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+
+        .search-results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: var(--bg-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .schedule-day {
+            background: var(--bg-light);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .schedule-day h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 0;
+                margin: 0;
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .days-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🐾 Dog Walker Control</h1>
+            <p class="subtitle">Gerenciador de Passeios de Cães</p>
+        </header>
+
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="home">📊 Dashboard</button>
+            <button class="tab-btn" data-tab="register">➕ Registrar</button>
+            <button class="tab-btn" data-tab="list">📋 Passeios</button>
+            <button class="tab-btn" data-tab="schedule">📅 Agenda</button>
+            <button class="tab-btn" data-tab="search">🔍 Buscar</button>
+        </nav>
+
+        <main class="content">
+            <!-- Dashboard -->
+            <div id="home" class="tab-content active">
+                <div class="dashboard">
+                    <div class="card card-revenue">
+                        <h3>💰 Total do Mês</h3>
+                        <p class="big-value" id="totalRevenue">R$ 0,00</p>
+                        <small id="totalWalks">0 passeios registrados</small>
+                    </div>
+                    <div class="card">
+                        <h3>📌 Informações Rápidas</h3>
+                        <ul id="quickInfo" style="list-style: none;">
+                            <li><strong>Donos:</strong> <span id="totalOwners">0</span></li>
+                            <li><strong>Cães:</strong> <span id="totalDogs">0</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Register -->
+            <div id="register" class="tab-content">
+                <div class="card">
+                    <h2>➕ Registrar Novo Passeio</h2>
+                    <form id="formAddWalk">
+                        <div class="form-row">
+                            <div>
+                                <label for="dogName">Nome do Cachorro *</label>
+                                <input type="text" id="dogName" placeholder="Ex: Rex, Bolinha..." required>
+                            </div>
+                            <div>
+                                <label for="ownerName">Nome do Dono *</label>
+                                <input type="text" id="ownerName" placeholder="Ex: João Silva..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div>
+                                <label for="phone">Telefone (opcional)</label>
+                                <input type="tel" id="phone" placeholder="(11) 9999-9999">
+                            </div>
+                            <div>
+                                <label for="walksPerDay">Passeios por Dia *</label>
+                                <input type="number" id="walksPerDay" min="1" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dias da Semana (máx. 5) *</label>
+                            <div class="days-grid" id="daysGrid"></div>
+                            <small id="daysHelp" style="display: block; margin-top: 10px;">Dias selecionados: 0/5</small>
+                        </div>
+
+                        <div class="form-info">
+                            <p id="estimatedValue">Valor estimado: R$ 0,00</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">✅ Registrar Passeio</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List -->
+            <div id="list" class="tab-content">
+                <div class="card">
+                    <h2>📋 Todos os Passeios</h2>
+                    <div id="walksListContainer"></div>
+                </div>
+            </div>
+
+            <!-- Schedule -->
+            <div id="schedule" class="tab-content">
+                <div class="card">
+                    <h2>📅 Agenda da Semana</h2>
+                    <div id="scheduleContainer"></div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div id="search" class="tab-content">
+                <div class="card">
+                    <h2>🔍 Buscar por Dono</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchOwner" placeholder="Digite o nome do dono...">
+                        <button class="btn btn-secondary" onclick="searchOwner()">Buscar</button>
+                    </div>
+                    <div id="searchResults" class="search-results"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const DAYS = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"];
+        const PRICE_PER_WALK = 25.0;
+        const MAX_DAYS = 5;
+        const STORAGE_KEY = "dogWalkerData";
+
+        // ══════════════════════════════════════════════════════════════
+        // INICIALIZAÇÃO
+        // ══════════════════════════════════════════════════════════════
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderDaysGrid();
+            setupEventListeners();
+            loadDashboard();
+        });
+
+        // ══════════════════════════════════════════════════════════════
+        // LOCAL STORAGE
+        // ══════════════════════════════════════════════════════════════
+
+        function getData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function saveData(data) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // EVENT LISTENERS
+        // ══════════════════════════════════════════════════════════════
+
+        function setupEventListeners() {
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.addEventListener("click", e => {
+                    const tabName = e.target.getAttribute("data-tab");
+                    switchTab(tabName);
+                });
+            });
+
+            document.getElementById("formAddWalk").addEventListener("submit", handleAddWalk);
+            document.getElementById("walksPerDay").addEventListener("change", updateEstimatedValue);
+            
+            document.querySelectorAll("#daysGrid input").forEach(cb => {
+                cb.addEventListener("change", () => {
+                    validateDaysSelection();
+                    updateEstimatedValue();
+                });
+            });
+
+            document.getElementById("searchOwner").addEventListener("keypress", e => {
+                if (e.key === "Enter") searchOwner();
+            });
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // TABS
+        // ══════════════════════════════════════════════════════════════
+
+        function switchTab(tabName) {
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+            document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+
+            document.getElementById(tabName)?.classList.add("active");
+            document.querySelector(`[data-tab="${tabName}"]`)?.classList.add("active");
+
+            if (tabName === "schedule") loadSchedule();
+            else if (tabName === "list") loadWalks();
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // DASHBOARD
+        // ══════════════════════════════════════════════════════════════
+
+        function loadDashboard() {
+            const walks = getData();
+            const total = walks.reduce((sum, w) => sum + w.total, 0);
+            const owners = new Set(walks.map(w => w.owner_name)).size;
+            const dogs = new Set(walks.map(w => w.dog_name)).size;
+
+            document.getElementById("totalRevenue").textContent = formatCurrency(total);
+            document.getElementById("totalWalks").textContent = `${walks.length} passeios registrados`;
+            document.getElementById("totalOwners").textContent = owners;
+            document.getElementById("totalDogs").textContent = dogs;
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // DAYS GRID
+        // ══════════════════════════════════════════════════════════════
+
+        function renderDaysGrid() {
+            const grid = document.getElementById("daysGrid");
+            grid.innerHTML = DAYS.map((day, idx) => `
+                <label class="day-checkbox">
+                    <input type="checkbox" value="${day}">
+                    <span>${day.split("-")[0]}</span>
+                </label>
+            `).join("");
+        }
+
+        function validateDaysSelection() {
+            const checkboxes = document.querySelectorAll("#daysGrid input");
+            const checkedCount = document.querySelectorAll("#daysGrid input:checked").length;
+
+            checkboxes.forEach(cb => {
+                if (!cb.checked && checkedCount >= MAX_DAYS) {
+                    cb.disabled = true;
+                } else {
+                    cb.disabled = false;
+                }
+            });
+
+            document.getElementById("daysHelp").textContent = `Dias selecionados: ${checkedCount}/${MAX_DAYS}`;
+        }
+
+        function updateEstimatedValue() {
+            const walksPerDay = parseInt(document.getElementById("walksPerDay").value) || 1;
+            const selectedDays = document.querySelectorAll("#daysGrid input:checked").length;
+            const total = walksPerDay * selectedDays * PRICE_PER_WALK;
+            document.getElementById("estimatedValue").textContent = `Valor estimado: ${formatCurrency(total)}`;
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // REGISTER
+        // ══════════════════════════════════════════════════════════════
+
+        function handleAddWalk(e) {
+            e.preventDefault();
+
+            const dogName = document.getElementById("dogName").value.trim();
+            const ownerName = document.getElementById("ownerName").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const walksPerDay = parseInt(document.getElementById("walksPerDay").value);
+            const daysSelected = Array.from(document.querySelectorAll("#daysGrid input:checked")).map(cb => cb.value);
+
+            if (!dogName || !ownerName || daysSelected.length === 0) {
+                showToast("Preencha todos os campos obrigatórios", "error");
+                return;
+            }
+
+            const totalWalks = walksPerDay * daysSelected.length;
+            const total = totalWalks * PRICE_PER_WALK;
+
+            const record = {
+                dog_name: dogName,
+                owner_name: ownerName,
+                phone: phone,
+                walks_per_day: walksPerDay,
+                days_of_week: daysSelected,
+                total_walks: totalWalks,
+                total: total,
+                date: new Date().toISOString().split("T")[0]
+            };
+
+            const walks = getData();
+            walks.push(record);
+            saveData(walks);
+
+            showToast(`✅ ${dogName} registrado com sucesso!`, "success");
+            document.getElementById("formAddWalk").reset();
+            validateDaysSelection();
+            updateEstimatedValue();
+            loadDashboard();
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // LIST & REMOVE
+        // ══════════════════════════════════════════════════════════════
+
+        function loadWalks() {
+            const walks = getData();
+
+            if (walks.length === 0) {
+                document.getElementById("walksListContainer").innerHTML = "<p>Nenhum passeio registrado</p>";
+                return;
+            }
+
+            let html = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🐕 Cachorro</th>
+                            <th>👤 Dono</th>
+                            <th>📱 Telefone</th>
+                            <th>📅 Dias</th>
+                            <th>💰 Total</th>
+                            <th>⚙️</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            walks.forEach((walk, idx) => {
+                const daysAbrev = walk.days_of_week.map(d => d.substring(0, 3)).join(" / ");
+                const phone = walk.phone || "-";
+
+                html += `
+                    <tr>
+                        <td>${walk.dog_name}</td>
+                        <td>${walk.owner_name}</td>
+                        <td>${phone}</td>
+                        <td>${daysAbrev}</td>
+                        <td>${formatCurrency(walk.total)}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="removeWalk(${idx})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            document.getElementById("walksListContainer").innerHTML = html;
+        }
+
+        function removeWalk(idx) {
+            if (confirm("Deseja remover este passeio?")) {
+                const walks = getData();
+                const dogName = walks[idx].dog_name;
+                walks.splice(idx, 1);
+                saveData(walks);
+                showToast(`✅ ${dogName} removido!`, "success");
+                loadWalks();
+                loadDashboard();
+            }
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // SCHEDULE
+        // ══════════════════════════════════════════════════════════════
+
+        function loadSchedule() {
+            const walks = getData();
+            const byDay = {};
+
+            DAYS.forEach(day => byDay[day] = []);
+            walks.forEach(walk => {
+                walk.days_of_week.forEach(day => {
+                    byDay[day].push(walk);
+                });
+            });
+
+            let html = "";
+            DAYS.forEach(day => {
+                if (byDay[day].length > 0) {
+                    const dayTotal = byDay[day].reduce((sum, w) => sum + (w.walks_per_day || 1), 0);
+                    const dayValue = dayTotal * PRICE_PER_WALK;
+
+                    html += `
+                        <div class="schedule-day">
+                            <h3>📅 ${day}</h3>
+                            <small>${dayTotal} passeio(s) – ${formatCurrency(dayValue)}</small>
+                            <ul style="list-style: none; margin-top: 10px;">
+                    `;
+
+                    byDay[day].forEach(w => {
+                        html += `
+                            <li style="padding: 8px; border-left: 3px solid var(--primary); margin-bottom: 8px;">
+                                🐕 <strong>${w.dog_name}</strong><br>
+                                <small>👤 ${w.owner_name} | 📱 ${w.phone || "sem telefone"}</small>
+                            </li>
+                        `;
+                    });
+
+                    html += `</ul></div>`;
+                }
+            });
+
+            document.getElementById("scheduleContainer").innerHTML = html || "<p>Nenhum passeio agendado</p>";
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // SEARCH
+        // ══════════════════════════════════════════════════════════════
+
+        function searchOwner() {
+            const ownerName = document.getElementById("searchOwner").value.trim();
+
+            if (!ownerName) {
+                showToast("Digite o nome do dono", "error");
+                return;
+            }
+
+            const walks = getData();
+            const results = walks.filter(w => w.owner_name.toLowerCase() === ownerName.toLowerCase());
+
+            if (results.length === 0) {
+                document.getElementById("searchResults").innerHTML = `<p>Nenhum resultado para "${ownerName}"</p>`;
+                return;
+            }
+
+            const total = results.reduce((sum, w) => sum + w.total, 0);
+            let html = `<h3>Resultados para "${ownerName}" (${results.length} cão(s)):</h3>`;
+
+            results.forEach(r => {
+                const daysAbrev = r.days_of_week.map(d => d.substring(0, 3)).join(" / ");
+                html += `
+                    <div class="result-item">
+                        <h4>🐕 ${r.dog_name}</h4>
+                        <p><small>📅 ${daysAbrev} | 🔢 ${r.walks_per_day} passeio(s)/dia | 📱 ${r.phone || "não informado"}</small></p>
+                        <p style="text-align: right; color: var(--primary); font-weight: bold;">${formatCurrency(r.total)}</p>
+                    </div>
+                `;
+            });
+
+            html += `
+                <div style="background: var(--bg-light); padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid var(--success);">
+                    <h4>💰 Total para ${ownerName}:</h4>
+                    <p style="font-size: 1.3rem; font-weight: bold; color: var(--success);">${formatCurrency(total)}</p>
+                </div>
+            `;
+
+            document.getElementById("searchResults").innerHTML = html;
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // UTILITIES
+        // ══════════════════════════════════════════════════════════════
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat("pt-BR", {
+                style: "currency",
+                currency: "BRL"
+            }).format(value);
+        }
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.className = `toast show ${type}`;
+            setTimeout(() => toast.classList.remove("show"), 3000);
+        }
+    </script>
+</body>
+</html>
