@@ -9,3 +9,20 @@ build/
 .env
 venv/
 .venv/
+
+# GitHub Pages / static-site build artifacts
+.DS_Store
+Thumbs.db
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.vscode/
+.idea/
+
+# Optional docs folder build outputs
+docs/.cache/
+docs/dist/
+docs/build/
+docs/node_modules/
+docs/.sass-cache/
