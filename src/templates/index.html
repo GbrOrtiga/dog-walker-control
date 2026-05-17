@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐾 Dog Walker Control</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🐾 Dog Walker Control</h1>
+            <p class="subtitle">Gerenciador de Passeios de Cães</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="home">📊 Dashboard</button>
+            <button class="tab-btn" data-tab="register">➕ Registrar</button>
+            <button class="tab-btn" data-tab="list">📋 Passeios</button>
+            <button class="tab-btn" data-tab="schedule">📅 Agenda</button>
+            <button class="tab-btn" data-tab="search">🔍 Buscar</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="content">
+
+            <!-- TAB 1: Dashboard -->
+            <div id="home" class="tab-content active">
+                <div class="dashboard">
+                    <div class="card card-revenue">
+                        <h3>💰 Total do Mês</h3>
+                        <p class="big-value" id="totalRevenue">R$ 0,00</p>
+                        <small id="totalWalks">0 passeios registrados</small>
+                    </div>
+
+                    <div class="card card-info">
+                        <h3>📌 Informações Rápidas</h3>
+                        <ul id="quickInfo">
+                            <li>Carregando...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card card-full">
+                    <h3>📅 Próximos Passeios (Semana)</h3>
+                    <div id="weekPreview" class="week-preview">
+                        <p>Carregando agenda...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: Register -->
+            <div id="register" class="tab-content">
+                <div class="card card-full">
+                    <h2>➕ Registrar Novo Passeio</h2>
+                    <form id="formAddWalk" class="form-group">
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="dogName">Nome do Cachorro *</label>
+                                <input type="text" id="dogName" placeholder="Ex: Rex, Bolinha..." required>
+                            </div>
+                            <div class="form-col">
+                                <label for="ownerName">Nome do Dono *</label>
+                                <input type="text" id="ownerName" placeholder="Ex: João Silva..." required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="phone">Telefone (opcional)</label>
+                                <input type="tel" id="phone" placeholder="(11) 9999-9999">
+                            </div>
+                            <div class="form-col">
+                                <label for="walksPerDay">Passeios por Dia *</label>
+                                <input type="number" id="walksPerDay" min="1" value="1" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Dias da Semana (máx. 5) *</label>
+                            <div class="days-grid">
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Segunda-feira"> <span>Segunda</span>
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Terça-feira"> <span>Terça</span>
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Quarta-feira"> <span>Quarta</span>
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Quinta-feira"> <span>Quinta</span>
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Sexta-feira"> <span>Sexta</span>
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Sábado"> <span>Sábado</span>
+                                </label>
+                                <label class="day-checkbox">
+                                    <input type="checkbox" value="Domingo"> <span>Domingo</span>
+                                </label>
+                            </div>
+                            <small id="daysHelp">Dias selecionados: 0/5</small>
+                        </div>
+
+                        <div class="form-info">
+                            <p id="estimatedValue">Valor estimado: R$ 0,00</p>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">✅ Registrar Passeio</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- TAB 3: List Walks -->
+            <div id="list" class="tab-content">
+                <div class="card card-full">
+                    <h2>📋 Todos os Passeios</h2>
+                    <div id="walksListContainer" class="table-responsive">
+                        <p>Carregando passeios...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: Schedule -->
+            <div id="schedule" class="tab-content">
+                <div class="card card-full">
+                    <h2>📅 Agenda da Semana</h2>
+                    <div id="scheduleContainer">
+                        <p>Carregando agenda...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: Search -->
+            <div id="search" class="tab-content">
+                <div class="card card-full">
+                    <h2>🔍 Buscar por Dono</h2>
+                    <div class="search-box">
+                        <input type="text" id="searchOwner" placeholder="Digite o nome do dono...">
+                        <button class="btn btn-secondary" onclick="searchOwner()">Buscar</button>
+                    </div>
+                    <div id="searchResults" class="search-results">
+                        <!-- Resultados aparecerão aqui -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
